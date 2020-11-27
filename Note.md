@@ -84,3 +84,17 @@ Type of services:
 - **Load Balancer**: make pod accessible from outside the cluster
 - **Node Port**: Make a pod accessible from outside the cluster (usually used for dev purposes)
 
+
+### Load Balancer and Ingerss/Ingress controller
+- **Load Balancer Service**: Tells kubernetes to reach out to its provider and provision a load balancer. Gets traffic in to a singler pod.
+- **Ingress**: A pod with a set of routing rules to distribute traffic to other services.
+
+_ingress-nginx: https://kubernetes.github.io/ingress-nginx/deploy/_ 
+
+Note the services that occupies port 80:
+Windows Remote Management (WS-Management)
+SSDP Discovery
+Print Spooler
+BranchCache
+
+Ingress controller doesn't know the http request METHOD (get, post, etc). Each request must be unique.
