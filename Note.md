@@ -1,3 +1,7 @@
+This repo is the notes and course code for the Udemy course <b>Microservices with NodeJS and React</b>
+
+https://www.udemy.com/course/microservices-with-node-js-and-react/
+
 **Keyword**: Self-contained<br />
 **Challege**: Data management between services
 
@@ -80,4 +84,3 @@ Type of services:
 - **Load Balancer**: make pod accessible from outside the cluster
 - **Node Port**: Make a pod accessible from outside the cluster (usually used for dev purposes)
 
-##### Cluster IP service
