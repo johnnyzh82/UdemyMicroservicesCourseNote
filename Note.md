@@ -91,10 +91,13 @@ Type of services:
 
 _ingress-nginx: https://kubernetes.github.io/ingress-nginx/deploy/_ 
 
-Note the services that occupies port 80:
-Windows Remote Management (WS-Management)
-SSDP Discovery
-Print Spooler
-BranchCache
+Note the services that occupies port 80:<br />
+- Windows Remote Management (WS-Management)<br />
+- SSDP Discovery<br />
+- Print Spooler<br />
+- BranchCache<br />
 
 Ingress controller doesn't know the http request METHOD (get, post, etc). Each request must be unique.
+
+### Skaffold - a tool to automate many tasks in Kubernetes dev environments (Development)
+Make it easy to update code in a running pod and create/delete all objects tied to a project at once.
