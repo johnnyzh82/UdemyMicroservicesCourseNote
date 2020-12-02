@@ -101,3 +101,11 @@ Ingress controller doesn't know the http request METHOD (get, post, etc). Each r
 
 ### Skaffold - a tool to automate many tasks in Kubernetes dev environments (Development)
 Make it easy to update code in a running pod and create/delete all objects tied to a project at once.
+
+## Key takeaway
+1. data is the big challenge in microservices
+2. Different ways to share data between services. Mainly focus on async communication
+3. Async communication focuses on communicating changes using events sent to an event bus
+4. Each service to be 100% self-sufficient. Easy to handle downtime or new service creation
+5. Docker makes it easier to package up services
+6. Kubernetes makes it easy to deploy + scale services
