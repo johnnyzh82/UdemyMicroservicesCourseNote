@@ -2,6 +2,9 @@ This repo is the notes and course code for the Udemy course <b>Microservices wit
 
 https://www.udemy.com/course/microservices-with-node-js-and-react/
 
+Course note:
+https://github.com/StephenGrider/microservices-casts
+
 **Keyword**: Self-contained<br />
 **Challege**: Data management between services
 
