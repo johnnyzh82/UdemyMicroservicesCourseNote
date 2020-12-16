@@ -27,3 +27,9 @@ Note that skaffold doesn't have azure support for now
 2. Update manifest yaml files
 3. Deploy application using kubectl apply
 4. Test application by hooking to the ingress load balancer public ip address
+
+
+### Express response normalization strategies
+Use a library call `express-validator` to validate request payload
+
+Check detail implementation under `routes`
