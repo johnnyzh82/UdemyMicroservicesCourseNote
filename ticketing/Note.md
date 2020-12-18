@@ -33,3 +33,17 @@ Note that skaffold doesn't have azure support for now
 Use a library call `express-validator` to validate request payload
 
 Check detail implementation under `routes`
+
+#### Typescript interfaces vs abstract class
+- Abstract class can not be instantiated
+- Abstract class is used to set up requirement for subclasses
+- Abstract class does create a Class when translated to JS, which means we can use it in 'instanceof' checks. However interface fades away when translated to JS and it only exists in TS
+
+#### Async middleware route handler
+1. Utilize function `next` to throw custom error 
+```
+app.get("*", async (req, res, next) => {
+    next(new NotFoundError());
+});
+```
+2. `express-async-errors` npm package and throw like regular sync fucntion

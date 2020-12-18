@@ -100,6 +100,8 @@ Note the services that occupies port 80:<br />
 - Print Spooler<br />
 - BranchCache<br />
 
+`net stop http`
+
 Ingress controller doesn't know the http request METHOD (get, post, etc). Each request must be unique.
 
 ### Skaffold - a tool to automate many tasks in Kubernetes dev environments (Development)
