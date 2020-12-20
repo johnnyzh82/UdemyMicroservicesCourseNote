@@ -47,3 +47,33 @@ app.get("*", async (req, res, next) => {
 });
 ```
 2. `express-async-errors` npm package and throw like regular sync fucntion
+
+### Database management and modeling
+Mongo db by default listens to port 27017
+
+
+1. Mongoose user model - represent the entire collection of users
+2. Mongoose user document - represent the single user
+
+Two main problems:
+1. TS + Mongoose on the types
+2. Additional properties added by Mongoose
+
+##### Type checking
+User factory pattern to create new object document to enforce object signature by typescript
+
+Better solution is using static build
+```
+userSchema.statics.build = (attrs: UserAttrs) => {
+    return new User(attrs);
+};
+```
+
+Hash the user password in User model
+
+## Authentication strategies 
+### Two general strategies to authenticate user request
+1. Individual service rely on the auth service (A centralized service for request authentication)
+Downside: single point of failure
+2. Teach each service to decide whether user is authenticated or not
+Downside: duplication & issue with centrual user management (like blacklist or ban an account)
