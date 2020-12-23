@@ -77,3 +77,94 @@ Hash the user password in User model
 Downside: single point of failure
 2. Teach each service to decide whether user is authenticated or not
 Downside: duplication & issue with centrual user management (like blacklist or ban an account)
+
+
+#### Cookie and encryption
+When user is considered to be logged in. Send them a JWT token in a cookie.
+
+Make sure content of a cookie is easy to understand between different languages
+
+**Not** encrypt the cookie content because JWT's are tamper resistent
+
+#### Generate JWT token
+jsonwebtoken library
+
+#### Securely store secrets with Kubernetes
+Share secret in kubernetes between different services
+
+An object 'Secret' (like Deployment, Service)
+
+Secret is exposed as an environment variable and can be accessed by Pods
+
+Imperative approach:
+```
+kubectl create secret generic jwt-secret --from-literal=jwt=asdf
+```
++ **generic** - kind of secret.
++ **jwt-secret** - name of secret.
++ **jwt=asdf** - key vaule pair of the secret.
+
+Declarative approach: to save the secret somewhere else
+
+List secrets:
+```
+kubectl get secrets
+```
+
+yaml file configuration
+```
+env:
+- name: JWT_KEY
+    valueFrom:
+    secretKeyRef:
+        name: jwt-secret
+        key: JWT_KEY
+```
+
+access env variables in a pod, ususaly put a guard check before application starts
+`process.env.JWT_KEY`
+
+formatting json properties
+`mongoose.Schema` has a `toJSON` transform function that allows you to delete/update JSON properties, and this logic is usually implemented at view level
+
+Ex:
+```
+const userSchema = new mongoose.Schema({
+    email: {
+        type: String, // refer to actual constructor String
+        required: true,
+    },
+    password: {
+        type: String, // refer to actual constructor String
+        required: true,
+    },
+}, {
+    toJSON: {
+        transform(doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+            delete ret.password;
+            delete ret.__v;
+        }
+    }
+});
+
+```
+
+### About jwt library
+`jsonwebtoken` can be used for generating, signing and verifying JWT tokens
+
+#### Modify exsiting typescript interfaces
+```
+declare global {
+    namespace Express {
+        interface Request {
+            currentUser?: UserPayload;
+        }
+    }
+}
+```
+The way to define middleware function is to abstract implementation and inject handler directly in the router.get/post ... functions
+```
+router.get("...", injectFunction, ...);
+```
