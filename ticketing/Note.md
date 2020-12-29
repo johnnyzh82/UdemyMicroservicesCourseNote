@@ -168,3 +168,13 @@ The way to define middleware function is to abstract implementation and inject h
 ```
 router.get("...", injectFunction, ...);
 ```
+
+## Testing
+- Test a single piece of code in isolation
+    - middlewares
+- Test how different pieces of code work together
+    - Request flowing through multiple middlewares to a request handler
+- Test how different component work together
+    - Make request to service, ensure write to database was complete
+- Test how different services work together
+    - Creating a 'payment' at the 'payments' service should affect the 'orders' service
