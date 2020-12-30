@@ -178,3 +178,21 @@ router.get("...", injectFunction, ...);
     - Make request to service, ensure write to database was complete
 - Test how different services work together
     - Creating a 'payment' at the 'payments' service should affect the 'orders' service
+
+The dev dependencies used here are
+- Jest
+- Supertests
+- Mongodb memeory server
+
+Steps:
+1. Abstract the `index.ts` and add `setup.ts` to have mongo memeory server and test setup
+2. Create `signup.test.ts` and use supertest to mock request and response
+``
+`return request(app)
+    .post('/api/users/signup')
+    .send({
+        email: 'test@test.com',
+        password: "password"
+    })
+    .expect(201);
+```
