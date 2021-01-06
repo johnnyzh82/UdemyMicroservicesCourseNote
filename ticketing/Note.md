@@ -196,3 +196,18 @@ Steps:
     })
     .expect(201);
 ```
+
+## Integrating a Server-Side-Rendered React App
+`next js` is a framework to use to implement server side rendering service.
+
+`ingress-srv.yaml` defines a list of path to match incoming request in order. Make sure match first specific request in order.
+
+**202**: `next.js` sometimes is finicky with file change detection when it's running inside a docker container. The solution is configuring the middleware when project starts with specifying the poll watch options.
+```
+module.export = {
+    webpackDevMiddleware: config => {
+        config.watchOptions.poll = 300;
+        return config;
+    }
+};
+```

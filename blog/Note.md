@@ -34,7 +34,7 @@ Event bus is central place to transmit all events to other services
 ### Docker
 <pre>
 docker build ./<br />
-docker build -t johnnyzh82/posts<br />
+docker build -t johnnyzh82/posts .<br />
 docker run [image id or image tag]<br />
 docker run -it [image id or image tag] [cmd]<br />
 docker ps<br />
