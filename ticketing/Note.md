@@ -41,7 +41,7 @@ Check detail implementation under `routes`
 
 #### Async middleware route handler
 1. Utilize function `next` to throw custom error 
-```
+```javascript
 app.get("*", async (req, res, next) => {
     next(new NotFoundError());
 });
@@ -63,7 +63,7 @@ Two main problems:
 User factory pattern to create new object document to enforce object signature by typescript
 
 Better solution is using static build
-```
+```javascript
 userSchema.statics.build = (attrs: UserAttrs) => {
     return new User(attrs);
 };
@@ -112,7 +112,7 @@ kubectl get secrets
 ```
 
 yaml file configuration
-```
+```yaml
 env:
 - name: JWT_KEY
     valueFrom:
@@ -128,7 +128,7 @@ formatting json properties
 `mongoose.Schema` has a `toJSON` transform function that allows you to delete/update JSON properties, and this logic is usually implemented at view level
 
 Ex:
-```
+```javascript
 const userSchema = new mongoose.Schema({
     email: {
         type: String, // refer to actual constructor String
@@ -155,7 +155,7 @@ const userSchema = new mongoose.Schema({
 `jsonwebtoken` can be used for generating, signing and verifying JWT tokens
 
 #### Modify exsiting typescript interfaces
-```
+```javascript
 declare global {
     namespace Express {
         interface Request {
@@ -165,7 +165,7 @@ declare global {
 }
 ```
 The way to define middleware function is to abstract implementation and inject handler directly in the router.get/post ... functions
-```
+```javascript
 router.get("...", injectFunction, ...);
 ```
 
@@ -187,8 +187,8 @@ The dev dependencies used here are
 Steps:
 1. Abstract the `index.ts` and add `setup.ts` to have mongo memeory server and test setup
 2. Create `signup.test.ts` and use supertest to mock request and response
-``
-`return request(app)
+```javascript
+return request(app)
     .post('/api/users/signup')
     .send({
         email: 'test@test.com',
@@ -202,12 +202,42 @@ Steps:
 
 `ingress-srv.yaml` defines a list of path to match incoming request in order. Make sure match first specific request in order.
 
-**202**: `next.js` sometimes is finicky with file change detection when it's running inside a docker container. The solution is configuring the middleware when project starts with specifying the poll watch options.
-```
+**#202**: `next.js` sometimes is finicky with file change detection when it's running inside a docker container. The solution is configuring the middleware when project starts with specifying the poll watch options.
+
+```javascript
 module.export = {
     webpackDevMiddleware: config => {
         config.watchOptions.poll = 300;
         return config;
     }
 };
+```
+
+**#203** Global CSS. A file is called `_app.js`. When importing your component from `index.js`. Nextjs wraps it up inside of it's own custom default component. 
+- Component: component itself
+- pageProps: properties passed to component
+This thin wrapper will have global css included at top
+[Github nextjs Global CSS must be in your custom <App>] (https://github.com/vercel/next.js/blob/master/errors/css-global.md)
+**#204** Sign up form
+`auth/signup.js`
+**#205** Sign up form email/password input handling
+useState hook of react
+```javascript
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+```
+**#206** sign up request (client -> engix controller -> cluster ip service -> pod that running container -> create user)
+**#207** handling errors -> useState and set errors state and bind to html
+**#208** the useRequest Hook
+url, method, body -----------> useRequest Hook -----------> doRequest, errors
+
+This is a shared function that abstract the global error handling. Set a global error, setErrors state under `hooks/use-request.js`. In the signup.js we can just call doRequest (actual ajax call function) and errors(mapped html error list).
+```javascript
+const { doRequest, errors } = useRequest({
+    url: "/api/users/signup",
+    method: "post",
+    body: {
+        email, password
+    }
+});
 ```
