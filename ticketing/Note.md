@@ -228,7 +228,7 @@ const [password, setPassword] = useState('');
 ```
 **#206** sign up request (client -> engix controller -> cluster ip service -> pod that running container -> create user)
 **#207** handling errors -> useState and set errors state and bind to html
-**#208** the useRequest Hook
+**#208, 209** the useRequest Hook
 url, method, body -----------> useRequest Hook -----------> doRequest, errors
 
 This is a shared function that abstract the global error handling. Set a global error, setErrors state under `hooks/use-request.js`. In the signup.js we can just call doRequest (actual ajax call function) and errors(mapped html error list).
@@ -240,4 +240,63 @@ const { doRequest, errors } = useRequest({
         email, password
     }
 });
+```
+**#210** on success handling
+**#211** server side rendering
+Request -> Next JS does
+1. inspect URL of incoming request. Determine set of components to show
+2. Call those component's 'getInitialProps' static method
+3. Render each component with data from 'getInitialProps' one time
+4. Assemble HTML from all components, send back response 
+
+What is `getInitialProps`? Fetch some data during server render process.
+
+**#212, #213, #214** Fetching Data during Server side rendering
+Fetching currentuser under server side rendering process causing some connection refuse error because the node can not evalute the domain and fetch to localhost of kubernetes environment.
+
+**#215** Cross namespace service communication
+`kubectl get namespace` get all kubectl namespaces
+`kubectl get services -n ingress-nginx` get services under a different namespace, without -n it will only return default namespace
+
+default <----> ingress-nginx
+http://ingress-nginx.ingress-nginx.svc.cluster.local
+{NAMEOFSERVICE}.{NAMESPACE}.srv.cluster.local
+
+#### External name service - remaps the domain of request
+
+**#216** The time getInitialProps get called.
+- on the server
+    - hard refresh of the page
+    - clicking link from different domain
+    - typing URL into address bar
+- on the client'
+    - navigating from one page to anther while in the app (NextJS router)
+
+**#219, #220** Specifying the Host
+Need to explicitly tell nginx which domain request was sent to
+```javascript
+ const { data } = await axios.get(
+    'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/users/currentuser', {
+        headers: {
+            Host: 'ticketing.dev'
+        }
+    }
+);
+```
+
+Cookie is not forwarded to auth service through ingress nginx
+Solution is replace header with req.header in getInitialProps function
+
+**#221, #222**, build a reusable API client that handles server/client call separately to improve readability
+
+**#223** Create a sign in page
+
+**#224, #225** Reusable header / Refactor
+
+**#226, 227** How to handle multiple GetInitialProps? Pass appContext context through
+```javascript
+let pageProps = {};
+if (appContext.Component.getInitialProps) {
+    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+}
 ```
