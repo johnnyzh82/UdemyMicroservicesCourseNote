@@ -300,3 +300,10 @@ if (appContext.Component.getInitialProps) {
     pageProps = await appContext.Component.getInitialProps(appContext.ctx);
 }
 ```
+
+
+## Section 12: code sharing and reuse between services
+
+Publish common code to NPM registry and install the dependency in other services
+
+NPM Public registry (Organization)
