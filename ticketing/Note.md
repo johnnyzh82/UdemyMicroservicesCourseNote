@@ -320,3 +320,5 @@ In `package.json` here are some entries we modified
     "build/**/*"                -------- which files should be included
 ],
 ```
+
+`npm version patch`, update the version number
