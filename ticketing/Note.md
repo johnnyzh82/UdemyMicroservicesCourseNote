@@ -307,3 +307,16 @@ if (appContext.Component.getInitialProps) {
 Publish common code to NPM registry and install the dependency in other services
 
 NPM Public registry (Organization)
+
+Common library is a shared library that is published to npm registry and it will be imported by other services
+
+- del-cli: clean build output
+
+In `package.json` here are some entries we modified 
+```
+"main": "./build/index.js",     -------- main file contains the imported files
+"types": "./build/index.d.ts",  -------- tell typescript where the types definitions are
+"files": [
+    "build/**/*"                -------- which files should be included
+],
+```
