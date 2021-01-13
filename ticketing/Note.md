@@ -322,3 +322,71 @@ In `package.json` here are some entries we modified
 ```
 
 `npm version patch`, update the version number
+
+`npm update @jztickets/common` update version if common updated
+
+Recall: `kubectl exec -it auth-depl-746f8d8c4-xjczj sh` check verion on kubectl pods
+
+## Section 13 Create-Read-Update-Destory Server Setup
+/api/tickets GET
+/api/tickets/:id GET
+/api/tickets POST { title: string, price: string }
+/api/tickets PUT { title: string, price: string }
+
+Tickets service
+1. Build image, push to docker hub
+2. Create kubernetes deployment and service files
+3. Skaffold yml file
+
+
+Auth, tickets services both have connection to its own mongo db, so it's good to configure the mongo db connection in deployment yaml files.
+
+
+##### #249 Add auth protection to ticket service
+Need to wire up with the middleware `requireAuth` to the `new.ts` router post request handler
+
+##### #250 Faking authentication during tests
+Auth service has a user signup handler, and tickets service doesn't have one. Can't use auth service global signin authentication.
+The tickets service test should be indenpendent and shall not have any inter services dependencies.
+
+**Solution:** Fabricated a cookie in each request while running the tests
+```javascript
+global.signin = () => {
+    // build a JWT payload { id, email }
+    const payload = {
+        id: '1kasdflsadf',
+        email: 'asfdasdfas',
+    };
+    // Create the JWT!
+    const token = jwt.sign(payload, process.env.JWT_KEY!);
+    // Build session object
+    const session = { jwt: token };
+    // Turn that session into JSON
+    const sessionJSON = JSON.stringify(session);
+    // Take JSON and encode it as base64
+    const base64 = Buffer.from(sessionJSON).toString('base64');
+    // return a string that's the cookie with the encoded data
+    return [`express:sess=${base64}`];
+};
+
+```
+
+##### #253 Validating title and price
+The express validator is very useful tool to vadliate the request payload (body function)
+`import { body } from 'express-validator';`
+
+##### #254 Mongoose models
+TicketAttrs - properties that required to build a record
+
+TicketDoc - mongoose doc (other properties like createdAt ...)
+
+TicketModle - build (attrs) => Doc
+
+
+...
+
+##### #255 - 259
+Test returns 400 bad request
+
+Mongoose db _id should be generated instead of dummy id. 
+`const id = new mongoose.Types.ObjectId().toHexString();`
