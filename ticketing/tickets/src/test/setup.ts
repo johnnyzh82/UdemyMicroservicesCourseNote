@@ -13,7 +13,9 @@ declare global {
 let mongo: any;
 
 beforeAll(async () => {
-    process.env.JWT_KEY = "asdf";
+    process.env.JWT_KEY = 'asdfasdf';
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    
     mongo = new MongoMemoryServer();
     const mongoUri = await mongo.getUri();
 
@@ -36,17 +38,19 @@ afterAll(async () => {
     await mongoose.connection.close();
 });
 
-global.signin = () => {
+global.signin = () => {    
+    const id = mongoose.Types.ObjectId().toHexString();
+
     // build a JWT payload { id, email }
     const payload = {
-        id: '1kasdflsadf',
-        email: 'asfdasdfas',
+        id,
+        email: 'test@test.com',
     };
 
     // Create the JWT!
     const token = jwt.sign(payload, process.env.JWT_KEY!);
 
-    // Build session object
+    // Build session Object. { jwt: MY_JWT }
     const session = { jwt: token };
 
     // Turn that session into JSON
@@ -55,6 +59,6 @@ global.signin = () => {
     // Take JSON and encode it as base64
     const base64 = Buffer.from(sessionJSON).toString('base64');
 
-    // return a string that's the cookie with the encoded data
+    // return a string thats the cookie with the encoded data
     return [`express:sess=${base64}`];
 };

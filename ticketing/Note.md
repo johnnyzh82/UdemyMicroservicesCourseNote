@@ -390,3 +390,10 @@ Test returns 400 bad request
 
 Mongoose db _id should be generated instead of dummy id. 
 `const id = new mongoose.Types.ObjectId().toHexString();`
+
+`new.ts`  	---> /api/tickets POST { title: string, price: string }
+`show.ts` 	---> /api/tickets/:id GET
+`index.ts` 	---> /api/tickets GET
+`put.ts`    ---> /api/tickets/:id PUT
+
+mongoose use ticket.set({ ...obj }) to save the ticket
