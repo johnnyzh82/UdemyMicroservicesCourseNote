@@ -397,3 +397,19 @@ Mongoose db _id should be generated instead of dummy id.
 `put.ts`    ---> /api/tickets/:id PUT
 
 mongoose use ticket.set({ ...obj }) to save the ticket
+
+
+310. NATS client singleton
+Implement the `nats-wrapper` to have a wrapper class to define a NATS client singleton connection
+The on close implementation is recommended to move out of the shared function because it might be risky to have process exit coded in the connect function
+
+
+318. Handling publish failure
+Transations Database 
+1. Transations collection
+2. Event collection <-----> (Separate code/process watching events) <-----> NATS
+
+If the events are **not** process successfully, need to roll back the record saved into the database.
+
+
+324. Using POD name as client Id which is unique per service instance
