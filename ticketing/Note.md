@@ -379,10 +379,17 @@ The express validator is very useful tool to vadliate the request payload (body 
 TicketAttrs - properties that required to build a record
 
 TicketDoc - mongoose doc (other properties like createdAt ...)
+The reason to separate Attrs and Doc interfaces is the properties we need to create a ticket might end up different thant the properties we get after created the ticket.
 
-TicketModle - build (attrs) => Doc
+TicketModel - build (attrs) => Doc, extra method for build Document
 
 
+Schema: mongoose schema, defines types
+Check enum value
+`enum: Object.values(OrderStatus),`
+
+export model:
+`const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema);`
 ...
 
 ##### #255 - 259
@@ -413,3 +420,75 @@ If the events are **not** process successfully, need to roll back the record sav
 
 
 324. Using POD name as client Id which is unique per service instance
+
+
+# Section 17 Cross-Service Data Replication in Action
+
+329. Order service
+
+| Route | Method | Body | Purpose |
+| --- | --- | --- | --- |
+| /api/orders | GET | - | Retrieve all active orders for the given user making the request |
+| /api/orders/:id | GET | - | Get details about a specific order |
+| /api/orders | POST | { ticketId: string } | Create an order to purchase the specific ticket |
+| /api/orders/:id | DELETE | - | Cancel the order |
+
+
+331. Associating Orders and Tickets
+
+We need to associate Tickets and Orders together (Ticket Document AND Order Document)
+
+1. Embedding - Order contains ticket information directly (plain child object)
+    a. Downside 1: Query is challenging
+    b. Downside 2: Where do we put an unreserved ticket? Can not have a stand-by pool to store all waiting tickets
+2. Mongoose Ref/Population Feature
+
+
+335. Mongoose Refs
+
++. To associate an existing Order and Ticket together
+```javascript
+const ticket = await Ticket.findOne({});
+const order = await Order.findOne({});
+
+order.ticket = ticket;
+await order.save();
+```
++. To associate an existing Ticket with a **new** Order
+```javascript
+const ticket = await Ticket.findOne({});
+const order = Order.build({
+    ticket: ticket,
+    userId: '...',
+    status: OrderStatus.Created,
+    expiresAt: tomorrow
+});
+```
++. To fetch an existing Order from the database with its associated ticket
+```javascript
+const order = await Order.findById('...').populate('ticket');
+// order.ticket.price
+// order.ticket.title ...
+```
+
+
+338. Finding Reserved Tickets
+Mongo db allows you to specify some parameter to query, like `$in`
+https://docs.mongodb.com/manual/reference/operator/query-comparison/
+```javascript
+const existingOrder = await Order.findOne({
+    ticket: ticket,
+    status: {
+        $in: [
+            OrderStatus.Created,
+            OrderStatus.AwaitingPayment,
+            OrderStatus.Complete
+        ]
+    }
+});
+```
+
+339. Convenience Document Method
+The function can be abstracted at Document level, like isReserved(): Promise<boolean>
+
+Another **takeaway** is we can group the import by its function and usage. For example, `Order` and `OrderStatus` have similar usage and they're all Order related models. But the `OrderStatus` model has been abstracted to common library. We can import and export this model in the `Order.ts` so other files can import these two models from same origin.
