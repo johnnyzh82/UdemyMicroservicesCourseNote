@@ -492,3 +492,11 @@ const existingOrder = await Order.findOne({
 The function can be abstracted at Document level, like isReserved(): Promise<boolean>
 
 Another **takeaway** is we can group the import by its function and usage. For example, `Order` and `OrderStatus` have similar usage and they're all Order related models. But the `OrderStatus` model has been abstracted to common library. We can import and export this model in the `Order.ts` so other files can import these two models from same origin.
+
+345. Fetching a User's Orders
+Mongoose populate system
+```javascript
+const orders = await Order.find({
+    userId: req.currentUser!.id
+}).populate('ticket');
+```
