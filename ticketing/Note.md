@@ -500,3 +500,14 @@ const orders = await Order.find({
     userId: req.currentUser!.id
 }).populate('ticket');
 ```
+
+
+352. Creating the Events
+Create Order Events published
+- Order Service -----> (order:created) -----> Ticket service (Tickets service needs to be told that one of tits tickets has been reserved, and no further edits to that ticket should be allowed)
+- Order Service -----> (order:created) -----> Payments service (Payments service needs to know there is a new order that a user might submit a payment for)
+- Order Service -----> (order:created) -----> Expiration service (Expiration service needs to start a 15 minute timer to eventually time out this order)
+
+Cancel Order Events published
+- Order Service -----> (order:cancelled) -----> Ticket service (Ticket service should unreserve a ticket if the correspoinding order has been cancelled so this ticket can be edited again)
+- Order Service -----> (order:cancelled) -----> Payments service (Payments should know that any incoming payments for this order should be rejected)
