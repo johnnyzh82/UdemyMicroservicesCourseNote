@@ -511,3 +511,17 @@ Create Order Events published
 Cancel Order Events published
 - Order Service -----> (order:cancelled) -----> Ticket service (Ticket service should unreserve a ticket if the correspoinding order has been cancelled so this ticket can be edited again)
 - Order Service -----> (order:cancelled) -----> Payments service (Payments should know that any incoming payments for this order should be rejected)
+
+Update Ticket Events published
+- Ticket Service -----> (ticket:updated) -----> Order Service (Order service needs to know when the price of a ticket has changed, and when a ticket has successfully been reserved)
+
+
+366. Clear concurrency issues
+Common issue includes a concurrency issue that a series of update event will broadcast in different order which turns update records mismatched between services.
+
+Solution: Mongoose updates the 'version' field of the document automatically
+
+##### mongoose-update-if-current
+This plugin brings optimistic concurrency control to Mongoose documents by incrementing document version numbers on each save, and preventing previous versions of a document from being saved over the current version.
+
+https://www.npmjs.com/package/mongoose-update-if-current
