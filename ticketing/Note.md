@@ -525,3 +525,25 @@ Solution: Mongoose updates the 'version' field of the document automatically
 This plugin brings optimistic concurrency control to Mongoose documents by incrementing document version numbers on each save, and preventing previous versions of a document from being saved over the current version.
 
 https://www.npmjs.com/package/mongoose-update-if-current
+
+
+**When should we increment or include the 'version' number of a record with an event?**
+Increment/include the 'version' number whenever the **primary service responsible for a record** emits an event to describe a **create/update/destroy** to a record
+
+
+376. Applying a Version Query
+Using `findOne` to attach version info
+
+```javascript
+// const ticket = await Ticket.findById(data.id);
+const ticket = await Ticket.findOne({
+    _id: data.id,
+    version: data.version - 1
+});
+```
+
+
+390. Strategies for Locking a Ticket
+Idea: add a property `locked` and prevent editing
+Problem: no idea who is locking the ticket
+Soluition: Using `orderId` to check what's the status of an order
