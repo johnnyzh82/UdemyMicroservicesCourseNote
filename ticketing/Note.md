@@ -547,3 +547,25 @@ const ticket = await Ticket.findOne({
 Idea: add a property `locked` and prevent editing
 Problem: no idea who is locking the ticket
 Soluition: Using `orderId` to check what's the status of an order
+
+
+# Section 20 Worker service
+
+Expiration service needs to start a 15 minute timer to eveutually time out this order
+Expiration service -----> expiration:complete -----> order service needs to know that an order has gone over the 15 minute time limit. It is up to the orders service to decide whether or not to cancel the order
+
+Option 1: setTimeout(..., 15 min)
+Timer stored in memeory. If service restarts, all timers are lost.
+
+Option 2: Time to emit. (If not, don't ack)
+Rely on NATS redelivery mechanism. Hard to track the real failed event versus the expired events. It's confusing for monitoring.
+
+Option 3: Event Bus (not nats)
+Broker waits 15 mins to publish message
+
+**Bull JS**: a Node library that implements a fast and robust queue system based on redis. In our ticketing system it's job is to remind us to do something 15 minutes from now.
+
+415.
+Order cancelled event -> payment service / ticket service
+
+Reset ticket when receiving expiration complete event:
