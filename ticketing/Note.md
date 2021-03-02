@@ -569,3 +569,52 @@ Broker waits 15 mins to publish message
 Order cancelled event -> payment service / ticket service
 
 Reset ticket when receiving expiration complete event:
+
+
+# Section 21 Payment Service
+
+Payment Service listens:
+1. Order:created
+2. Order:cancelled
+
+Changes / Orders ---> charges: created
+
+Stripe JS library
+
+Payment Service flow:
+
+0. Request (Create a 'charge')
+1. Find order the user is trying to pay for
+2. Make sure the order belongs to this user
+3. Make sure the payment amount matches the amount due for this order
+4. Verify payment with Stripe API
+5. Create 'charge' record to record sucessful payment
+
+
+Stripe stripe.com
+Secret stored as a kubectl secret
+`kubectl create secret generic stripe-secret --from-literal STRIPE_KEY={Secret}`
+
+Use this command to check secret
+`kubectl get secrets`
+
+442. Test
+
+1. Mock the stripe class
+2. More realistic test: call the stripe api to get charges
+
+list last 50 charges
+```javascript
+const stripeCharges = await stripe.charges.list({ limit: 50 });
+const stripeCharge = stripeCharges.data.find(charge => {
+    return charge.amount === price * 100;
+});
+
+expect(stripeCharge).toBeDefined();
+expect(stripeCharge!.currency).toEqual('usd');
+```
+
+444. Tying an Order and Charge Together.
+
+Build payment model
+**One note here**: have a build static function on the model schema is to leverage the **factory pattern** and **typescript intellisense** support on the mongoose model build. Note the mongoose model `new` constructor arg has `any` type
