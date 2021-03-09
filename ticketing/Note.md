@@ -618,3 +618,26 @@ expect(stripeCharge!.currency).toEqual('usd');
 
 Build payment model
 **One note here**: have a build static function on the model schema is to leverage the **factory pattern** and **typescript intellisense** support on the mongoose model build. Note the mongoose model `new` constructor arg has `any` type
+
+
+
+# Section 23: Back to client
+456 Linking to WildCard Routes
+
+When building a Ticket detail page, nextjs allows you to specify the file name route as `[ticketId].js` if the url is dynamically is constructed with some ids. For example, ticketing.dev/tickets/asdfasdf will route user to `[ticketId].js`.
+
+The link element can be specify with both href and as. The href is the format and as is the real url
+```html          
+<Link href="/tickets/[ticketId]" as={`/tickets/${ticket.id}`}>
+    <a>View</a>
+</Link>
+```
+
+
+459 The expiration timer
+
+The expiration time is added into `[orderId].js`. Some key notes:
+1. Use `useEffect` function to set the interval and update the timeLeft on the component
+    a. first time trigger of `setInterval` function will be manual.
+    b. second arg is the dependency list (on order)
+2. When to use `useEffect` in React?
